@@ -7,3 +7,8 @@ export type UserInfo = {
 export type AuthHeader = {
   authorization: string
 }
+
+export type Epic = {
+  id: number
+  title: string
+}
