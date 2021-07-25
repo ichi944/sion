@@ -9,3 +9,5 @@ export const getEpics = () => {
 }
 export const createEpic = (title: Epic['title']) =>
   prisma.epic.create({ data: { title } })
+export const deleteEpic = (id: Epic['id']) =>
+  prisma.epic.delete({ where: { id } })

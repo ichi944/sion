@@ -39,6 +39,10 @@ const Home = () => {
     },
     [input_title]
   )
+  const deleteCard = async (id: number) => {
+    await apiClient.epics.delete({ body: { id } })
+    invalidateEpics()
+  }
   return (
     <>
       <Box h="8"></Box>
@@ -60,9 +64,16 @@ const Home = () => {
         </FormControl>
       </Box>
       <Box border="1px" borderColor="gray.200" borderRadius="sm" p="8px">
-        {epics?.map((epic) => {
-          return <div key={epic.id}>{epic.title}</div>
-        })}
+        <ul>
+          {epics?.map((epic) => {
+            return (
+              <li key={epic.id}>
+                {epic.title}{' '}
+                <button onClick={() => deleteCard(epic.id)}>Delete</button>
+              </li>
+            )
+          })}
+        </ul>
       </Box>
     </>
   )

@@ -10,4 +10,8 @@ export type Methods = {
     reqBody: Pick<Epic, 'title'>
     resBody: Epic
   }
+  delete: {
+    reqBody: Pick<Epic, 'id'>
+    resBody: Epic
+  }
 }

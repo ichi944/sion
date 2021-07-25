@@ -1,5 +1,5 @@
 import { defineController } from './$relay'
-import { createEpic, getEpics } from '$/service/epics'
+import { createEpic, deleteEpic, getEpics } from '$/service/epics'
 import { Epic } from '$/types'
 
 export default defineController(() => ({
@@ -8,6 +8,12 @@ export default defineController(() => ({
     return {
       status: 200,
       body: await createEpic(body.title)
+    }
+  },
+  delete: async ({ body }) => {
+    return {
+      status: 200,
+      body: await deleteEpic(body.id)
     }
   }
 }))
