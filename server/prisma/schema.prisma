@@ -10,8 +10,15 @@ generator client {
 model Epic {
   id Int @id @default(autoincrement())
   title String
+  storyPoint StoryPoint?
 }
 
+model StoryPoint {
+  id Int @id @default(autoincrement())
+  epic Epic @relation(fields: [epicId], references: [id])
+  epicId Int
+  point Float
+}
 model Task {
   id    Int     @id @default(autoincrement())
   label String

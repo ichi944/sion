@@ -33,5 +33,7 @@ yarn-error.log*
 # server
 server/**/$*.ts
 server/**/*.db
+server/**/*.db-journal
 server/index.js
 server/upload/
+
