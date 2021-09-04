@@ -1,4 +1,8 @@
+import { Prisma } from '@prisma/client'
 import { Epic } from '$/types'
+import { getEpics } from '$/service/epics'
+
+type EpicsWithStoryPoint = Prisma.PromiseReturnType<typeof getEpics>
 export type Methods = {
   get: {
     query?: {

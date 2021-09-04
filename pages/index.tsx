@@ -8,6 +8,7 @@ import UserBanner from '~/components/UserBanner'
 import type { Task } from '$prisma/client'
 import type { FormEvent, ChangeEvent } from 'react'
 import { Box, Heading } from '@chakra-ui/react'
+import { Badge } from '@chakra-ui/react'
 import {
   FormControl,
   FormLabel,
@@ -63,17 +64,34 @@ const Home = () => {
           <Button onClick={addCard}>Add</Button>
         </FormControl>
       </Box>
-      <Box border="1px" borderColor="gray.200" borderRadius="sm" p="8px">
-        <ul>
-          {epics?.map((epic) => {
-            return (
-              <li key={epic.id}>
-                {epic.title}{' '}
-                <button onClick={() => deleteCard(epic.id)}>Delete</button>
-              </li>
-            )
-          })}
-        </ul>
+      <Box
+        border="1px"
+        backgroundColor="gray.100"
+        borderColor="gray.200"
+        borderRadius="sm"
+        p="8px"
+      >
+        {epics?.map((epic) => {
+          return (
+            <Box
+              key={epic.id}
+              p={2}
+              border="1px"
+              borderColor="gray.200"
+              borderRadius="md"
+              backgroundColor="white"
+              mb={1}
+            >
+              {epic.title}
+              <Badge colorScheme="blue" m={1}>
+                {epic.storyPoint?.point}
+              </Badge>
+              <Button size="xs" onClick={() => deleteCard(epic.id)}>
+                Delete
+              </Button>
+            </Box>
+          )
+        })}
       </Box>
     </>
   )
