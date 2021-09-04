@@ -11,4 +11,11 @@ export type AuthHeader = {
 export type Epic = {
   id: number
   title: string
+  storyPoint?: StoryPoint
+}
+
+export type StoryPoint = {
+  id: number
+  epicId: number
+  point: number
 }
