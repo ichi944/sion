@@ -17,6 +17,7 @@ import {
   Button,
   Badge
 } from '@chakra-ui/react'
+import { Epic } from '~/server/types'
 
 const Home = () => {
   const [input_title, setInputTitle] = useState<string>('')

@@ -1,9 +1,11 @@
 import { depend } from 'velona'
-import { PrismaClient } from '@prisma/client'
-import type { Epic, Prisma } from '$prisma/client'
+import { PrismaClient, Prisma } from '@prisma/client'
+import type { Epic } from '$prisma/client'
 
 const prisma = new PrismaClient()
-
+const epicWithStoryPoint = Prisma.validator<Prisma.EpicArgs>()({
+  include: { storyPoint: true }
+})
 export const getEpics = () => {
   return prisma.epic.findMany({
     include: {
