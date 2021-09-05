@@ -14,8 +14,10 @@ import {
   FormErrorMessage,
   FormHelperText,
   Input,
-  Button
+  Button,
+  Badge
 } from '@chakra-ui/react'
+import { Epic } from '~/server/types'
 
 const Home = () => {
   const [input_title, setInputTitle] = useState<string>('')
@@ -68,7 +70,8 @@ const Home = () => {
           {epics?.map((epic) => {
             return (
               <li key={epic.id}>
-                {epic.title}{' '}
+                <span>{epic.title}</span>
+                <Badge colorScheme="green">{epic.storyPoint?.point}</Badge>
                 <button onClick={() => deleteCard(epic.id)}>Delete</button>
               </li>
             )

@@ -12,3 +12,9 @@ export type Epic = {
   id: number
   title: string
 }
+
+export type StoryPoint = {
+  id: number
+  epicId: number
+  point: number
+}
