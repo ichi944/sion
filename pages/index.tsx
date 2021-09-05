@@ -15,7 +15,17 @@ import {
   FormHelperText,
   Input,
   Button,
-  Badge
+  Badge,
+  useDisclosure
+} from '@chakra-ui/react'
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton
 } from '@chakra-ui/react'
 import { Epic } from '~/server/types'
 
@@ -23,6 +33,14 @@ const Home = () => {
   const [input_title, setInputTitle] = useState<string>('')
   const queryClient = useQueryClient()
   const { data: epics, error } = useAspidaQuery(apiClient.epics)
+  const [activeCard, setActiveCard] = useState<Epic | null>(null)
+  const [edit_card, setEditCard] = useState<
+    Pick<Epic, 'title' | 'description'>
+  >({
+    title: '',
+    description: ''
+  })
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const handleUpdateInputTitle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputTitle(e.target.value)
@@ -37,12 +55,28 @@ const Home = () => {
     async (e: FormEvent) => {
       e.preventDefault()
       await apiClient.epics.post({ body: { title: input_title } })
+      setInputTitle('')
       invalidateEpics()
     },
     [input_title]
   )
-  const deleteCard = async (id: number) => {
-    await apiClient.epics.delete({ body: { id } })
+  const closeCard = async (id: number) => {
+    await apiClient.epics.patch({ body: { type: 'close', id } })
+    invalidateEpics()
+  }
+  const openEditModal = (epic: Epic) => {
+    setActiveCard(epic)
+    setEditCard({ ...epic })
+    onOpen()
+  }
+  const updateCard = async () => {
+    if (!activeCard) {
+      return
+    }
+    const result = await apiClient.epics.patch({
+      body: { type: 'update', id: activeCard.id, ...edit_card }
+    })
+    onClose()
     invalidateEpics()
   }
   return (
@@ -72,12 +106,51 @@ const Home = () => {
               <li key={epic.id}>
                 <span>{epic.title}</span>
                 <Badge colorScheme="green">{epic.storyPoint?.point}</Badge>
-                <button onClick={() => deleteCard(epic.id)}>Delete</button>
+                <Button onClick={() => openEditModal(epic)}>Edit</Button>
+                <Button onClick={() => closeCard(epic.id)}>Close</Button>
               </li>
             )
           })}
         </ul>
       </Box>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Card</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box>
+              Title:{' '}
+              <Input
+                value={edit_card.title}
+                onChange={(e) =>
+                  setEditCard((state) => ({ ...state, title: e.target.value }))
+                }
+              />
+            </Box>
+            <Box>
+              Desctiption:{' '}
+              <Input
+                value={edit_card.description}
+                onChange={(e) =>
+                  setEditCard((state) => ({
+                    ...state,
+                    description: e.target.value
+                  }))
+                }
+              />
+            </Box>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button colorScheme="blue" mr={3} onClick={updateCard}>
+              Update
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   )
 }
