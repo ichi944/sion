@@ -11,6 +11,7 @@ model Epic {
   id Int @id @default(autoincrement())
   title String @default("")
   description String @default("")
+  closed Boolean @default(false)
   storyPoint StoryPoint?
 }
 

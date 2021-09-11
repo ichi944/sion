@@ -11,6 +11,8 @@ export type AuthHeader = {
 export type Epic = {
   id: number
   title: string
+  description: string
+  closed: boolean
 }
 
 export type StoryPoint = {
