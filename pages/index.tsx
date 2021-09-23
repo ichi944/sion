@@ -29,7 +29,7 @@ import {
   ModalCloseButton
 } from '@chakra-ui/react'
 import { Epic, EpicWithStoryPoint, StoryPoint } from '~/server/types'
-
+import NewCard from '~/components/board/NewCard'
 type AddCardInput = {
   title: string
 }
@@ -85,29 +85,8 @@ const Home = () => {
   return (
     <>
       <Box h="8"></Box>
-      <Box border="1px" borderColor="gray.200" borderRadius="sm" p="8px">
-        <Heading as="h2" size="md">
-          Card Registration
-        </Heading>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl id="title">
-            <FormLabel htmlFor="title">Please input title</FormLabel>
-            <Input
-              {...register('title', {
-                required: true,
-                minLength: 1,
-                maxLength: 120
-              })}
-              placeholder="Enter card title"
-            />
-            <FormErrorMessage>
-              {errors.title && errors.title.message}
-            </FormErrorMessage>
-          </FormControl>
-          <Box h="8"></Box>
-          <Button type="submit">Submit</Button>
-        </form>
-      </Box>
+      <NewCard></NewCard>
+
       <Box border="1px" borderColor="gray.200" borderRadius="sm" p="8px">
         <ul>
           {epics?.map((epic) => {

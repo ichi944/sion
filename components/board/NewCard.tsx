@@ -26,7 +26,6 @@ const NewCard = () => {
     register,
     setValue,
     handleSubmit,
-    watch,
     formState: { errors }
   } = useForm<AddCardInput>()
   const onSubmit: SubmitHandler<AddCardInput> = async (data) => {
