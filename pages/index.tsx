@@ -7,6 +7,7 @@ import { apiClient } from '~/utils/apiClient'
 import UserBanner from '~/components/UserBanner'
 import type { Task } from '$prisma/client'
 import type { FormEvent, ChangeEvent } from 'react'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { Box, Heading } from '@chakra-ui/react'
 import {
   FormControl,
@@ -27,7 +28,11 @@ import {
   ModalBody,
   ModalCloseButton
 } from '@chakra-ui/react'
-import { Epic } from '~/server/types'
+import { Epic, EpicWithStoryPoint, StoryPoint } from '~/server/types'
+
+type AddCardInput = {
+  title: string
+}
 
 const Home = () => {
   const [input_title, setInputTitle] = useState<string>('')
@@ -35,17 +40,30 @@ const Home = () => {
   const { data: epics, error } = useAspidaQuery(apiClient.epics)
   const [activeCard, setActiveCard] = useState<Epic | null>(null)
   const [edit_card, setEditCard] = useState<
-    Pick<Epic, 'title' | 'description'>
+    Pick<Epic, 'title' | 'description'> & { storyPoint: StoryPoint | null }
   >({
     title: '',
-    description: ''
+    description: '',
+    storyPoint: null
   })
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm<AddCardInput>()
+  const onSubmit: SubmitHandler<AddCardInput> = async (data) => {
+    await apiClient.epics.post({ body: { title: data.title } })
+    invalidateEpics()
+    setValue('title', '')
+  }
   const handleUpdateInputTitle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputTitle(e.target.value)
     },
-    []
+    [input_title]
   )
   const invalidateEpics = useCallback(
     () => queryClient.invalidateQueries(apiClient.epics.$path()),
@@ -64,7 +82,7 @@ const Home = () => {
     await apiClient.epics.patch({ body: { type: 'close', id } })
     invalidateEpics()
   }
-  const openEditModal = (epic: Epic) => {
+  const openEditModal = (epic: EpicWithStoryPoint) => {
     setActiveCard(epic)
     setEditCard({ ...epic })
     onOpen()
@@ -86,18 +104,24 @@ const Home = () => {
         <Heading as="h2" size="md">
           Card Registration
         </Heading>
-        <FormControl id="title">
-          <FormLabel>Please input title</FormLabel>
-          <Input
-            type="text"
-            value={input_title}
-            onChange={handleUpdateInputTitle}
-          ></Input>
-        </FormControl>
-        <Box h="8"></Box>
-        <FormControl>
-          <Button onClick={addCard}>Add</Button>
-        </FormControl>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <FormControl id="title">
+            <FormLabel htmlFor="title">Please input title</FormLabel>
+            <Input
+              {...register('title', {
+                required: true,
+                minLength: 1,
+                maxLength: 120
+              })}
+              placeholder="Enter card title"
+            />
+            <FormErrorMessage>
+              {errors.title && errors.title.message}
+            </FormErrorMessage>
+          </FormControl>
+          <Box h="8"></Box>
+          <Button type="submit">Submit</Button>
+        </form>
       </Box>
       <Box border="1px" borderColor="gray.200" borderRadius="sm" p="8px">
         <ul>
@@ -136,6 +160,21 @@ const Home = () => {
                   setEditCard((state) => ({
                     ...state,
                     description: e.target.value
+                  }))
+                }
+              />
+            </Box>
+            <Box>
+              Story Point:{' '}
+              <Input
+                value={edit_card.storyPoint?.point || ''}
+                onChange={(e) =>
+                  setEditCard((state) => ({
+                    ...state,
+                    storyPoint: state.storyPoint && {
+                      ...state.storyPoint,
+                      point: parseInt(e.target.value, 10)
+                    }
                   }))
                 }
               />

@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client'
-import { Epic, StoryPoint } from '$/types'
+import { Epic, StoryPoint, EpicWithStoryPoint } from '$/types'
 import { CloseEpicRequest, UpdateEpicContentRequest } from '$/validators'
 
 export type Methods = {
@@ -8,7 +8,7 @@ export type Methods = {
       limit: number
     }
     // resBody: Epic[]
-    resBody: (Epic & { storyPoint: StoryPoint | null })[]
+    resBody: EpicWithStoryPoint[]
   }
   post: {
     reqBody: Pick<Epic, 'title'>

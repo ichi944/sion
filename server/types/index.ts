@@ -20,3 +20,7 @@ export type StoryPoint = {
   epicId: number
   point: number
 }
+
+export type EpicWithStoryPoint = Epic & {
+  storyPoint: StoryPoint | null
+}
