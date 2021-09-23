@@ -59,24 +59,9 @@ const Home = () => {
     invalidateEpics()
     setValue('title', '')
   }
-  const handleUpdateInputTitle = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setInputTitle(e.target.value)
-    },
-    [input_title]
-  )
   const invalidateEpics = useCallback(
     () => queryClient.invalidateQueries(apiClient.epics.$path()),
     [queryClient]
-  )
-  const addCard = useCallback(
-    async (e: FormEvent) => {
-      e.preventDefault()
-      await apiClient.epics.post({ body: { title: input_title } })
-      setInputTitle('')
-      invalidateEpics()
-    },
-    [input_title]
   )
   const closeCard = async (id: number) => {
     await apiClient.epics.patch({ body: { type: 'close', id } })
